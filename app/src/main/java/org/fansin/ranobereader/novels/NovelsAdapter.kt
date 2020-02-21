@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import org.fansin.ranobereader.R
-import org.fansin.ranobereader.domain.model.Novel
 
 class NovelsAdapter(
     diffUtilCallback: DiffUtil.ItemCallback<NovelRecyclerWrapper>

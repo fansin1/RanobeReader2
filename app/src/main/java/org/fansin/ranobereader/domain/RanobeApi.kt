@@ -8,7 +8,7 @@ import retrofit2.http.Query
 
 interface RanobeApi {
 
-    @GET("books1?page=1&pageSize=16")
+    @GET("books?page=1&pageSize=16")
     fun getBooks(@Query("page") page: Int,
                  @Query("pageSize") pageSize: Int): Call<ResultList<Novel>>
 

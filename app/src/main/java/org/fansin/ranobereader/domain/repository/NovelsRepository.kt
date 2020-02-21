@@ -4,6 +4,7 @@ import android.util.Log
 import org.fansin.ranobereader.domain.RanobeApi
 import org.fansin.ranobereader.domain.model.Novel
 import org.fansin.ranobereader.domain.model.ResultList
+import org.fansin.ranobereader.novels.NovelErrorResponseException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,7 +29,11 @@ class NovelsRepository(
                 call: Call<ResultList<Novel>>,
                 response: Response<ResultList<Novel>>
             ) {
-                novelCallback.onResult(response.body()?.items ?: listOf())
+                if (response.code() / 100 != 2) {
+                    novelCallback.onError(NovelErrorResponseException(response.code()))
+                } else {
+                    novelCallback.onResult(response.body()?.items ?: listOf())
+                }
             }
         })
     }
