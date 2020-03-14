@@ -1,20 +1,29 @@
 package org.fansin.ranobereader.domain.model
 
+import android.os.Parcelable
+import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import org.fansin.ranobereader.domain.model.Chapter
+import androidx.room.TypeConverters
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.android.parcel.Parcelize
 
-@Entity
+@Parcelize
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity(tableName = "novel")
+@TypeConverters(NovelTypeConverter::class)
 data class Novel(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = false) val id: Int,
     val title: String,
-    val author: String,
-    val genres: List<String>,
-    @Ignore val chapters: MutableList<Chapter>,
-    val imageUrl: String,
-    val description: String
-) {
-    var isFavorite = false
-    var lastReadChapter = 0
-}
+    @Embedded val author: Author = Author(0, ""),
+
+    val genres: List<String> = listOf(),
+
+    val chapters: MutableList<Chapter> = mutableListOf(),
+
+    val images: List<Image> = listOf(),
+
+    val description: String = "",
+    val likesCount: Int = 0,
+    val dislikesCount: Int = 0
+) : Parcelable

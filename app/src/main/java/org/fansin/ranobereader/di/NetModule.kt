@@ -1,34 +1,36 @@
 package org.fansin.ranobereader.di
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import android.content.Context
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import org.fansin.ranobereader.domain.RanobeApi
-import org.fansin.ranobereader.domain.model.Novel
-import org.fansin.ranobereader.domain.model.NovelDeserializer
+import org.fansin.ranobereader.ApplicationConfig.BASE_URL
+import org.fansin.ranobereader.ApplicationConfig.CONNECTION_TIMEOUT
+import org.fansin.ranobereader.network.ConnectionLiveData
+import org.fansin.ranobereader.network.RanobeApi
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-
-private const val CONNECTION_TIMEOUT: Long = 30000
-private const val BASE_URL = "https://xn--80ac9aeh6f.xn--p1ai/api/v2/"
 
 @Module
 class NetModule {
 
     @Singleton
     @Provides
-    fun provideNovelDeserializer(): NovelDeserializer {
-        return NovelDeserializer()
+    fun provideConnectionLiveData(context: Context): ConnectionLiveData {
+        return ConnectionLiveData(context)
     }
 
     @Singleton
     @Provides
-    fun provideGson(novelDeserializer: NovelDeserializer): Gson {
-        return GsonBuilder().registerTypeAdapter(Novel::class.java, novelDeserializer).create()
+    fun provideJacksonObjectMapper(): ObjectMapper {
+        return jacksonObjectMapper().apply {
+            registerKotlinModule()
+        }
     }
 
     @Singleton
@@ -41,10 +43,10 @@ class NetModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient, mapper: ObjectMapper): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(JacksonConverterFactory.create(mapper))
             .client(okHttpClient)
             .build()
     }
@@ -54,5 +56,4 @@ class NetModule {
     fun provideApi(retrofit: Retrofit): RanobeApi {
         return retrofit.create(RanobeApi::class.java)
     }
-
 }

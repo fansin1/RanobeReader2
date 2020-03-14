@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RanobeReader</string>
+    <string name="title_novels">Новеллы</string>
+    <string name="title_favorites">Избранное</string>
+    <string name="title_settings">Настройки</string>
+    <string name="failed_message">Не удалось загрузить</string>
+    <string name="novel_author"><![CDATA[<b>Автор:</b> %s]]></string>
+</resources>

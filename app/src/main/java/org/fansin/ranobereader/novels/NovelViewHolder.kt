@@ -1,54 +1,30 @@
 package org.fansin.ranobereader.novels
 
-import android.os.Build
-import android.text.Html
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.novel_card.view.*
+import org.fansin.ranobereader.domain.model.Novel
+import org.fansin.ranobereader.novels.NovelsAdapter.NovelClickListener
 
-class NovelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class NovelViewHolder(
+    itemView: View
+) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(wrapper: NovelRecyclerWrapper) {
-        val novel = wrapper.novel
-        itemView.title.text = novel.title
-        if (novel.imageUrl.isNotEmpty()) {
-            Picasso.get().load(novel.imageUrl).into(itemView.image)
-        }
-        if (novel.author.isNotEmpty()) {
-            itemView.author.apply {
-                visibility = View.VISIBLE
-                text = "Author: ${novel.author}"
-            }
-        } else {
-            itemView.author.visibility = View.GONE
-        }
-        if (novel.description.isNotEmpty()) {
-            itemView.description.apply {
-                visibility = View.VISIBLE
-                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Html.fromHtml(novel.description, Html.FROM_HTML_MODE_COMPACT)
-                } else {
-                    Html.fromHtml(novel.description)
-                }
-            }
-        } else {
-            itemView.description.visibility = View.GONE
-        }
+    private lateinit var novel: Novel
+    private lateinit var novelClickListener: NovelClickListener
 
-        updateState(wrapper)
-
-        itemView.setOnClickListener {
-            wrapper.isExpanded = !wrapper.isExpanded
-            updateState(wrapper)
-        }
+    fun setNovelClickListener(novelClickListener: NovelClickListener) {
+        this.novelClickListener = novelClickListener
     }
 
-    private fun updateState(wrapper: NovelRecyclerWrapper) {
-        if (wrapper.isExpanded) {
-            itemView.description.maxLines = Int.MAX_VALUE
-        } else {
-            itemView.description.maxLines = 4
-        }
+    fun bind(bindNovel: Novel) {
+        this.novel = bindNovel
+        bindClickListeners()
+    }
+
+    private fun bindClickListeners() {
+        itemView.book.setOnClickListener { novelClickListener.onToBookClick(novel) }
+        itemView.likes.setOnClickListener { novelClickListener.onLikeClick() }
+        itemView.dislikes.setOnClickListener { novelClickListener.onDislikeClick() }
     }
 }

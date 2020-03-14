@@ -3,23 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_novels">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="org.fansin.ranobereader.novels.NovelsFragment"
+        android:id="@+id/navigation_novels"
+        android:name="org.fansin.ranobereader.ui.NovelsFragment"
         android:label="@string/title_novels"
-        tools:layout="@layout/fragment_novels" />
+        tools:layout="@layout/fragment_novels" >
+        <action
+            android:id="@+id/action_navigation_home_to_novelDetailsActivity"
+            app:destination="@id/navigation_novel_details" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="org.fansin.ranobereader.favorites.FavoritesFragment"
+        android:id="@+id/navigation_favorites"
+        android:name="org.fansin.ranobereader.ui.FavoritesFragment"
         android:label="@string/title_favorites"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_novelDetailsActivity"
+            app:destination="@id/navigation_novel_details" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="org.fansin.ranobereader.preferences.PreferencesFragment"
+        android:id="@+id/navigation_settings"
+        android:name="org.fansin.ranobereader.ui.PreferencesFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_preferences" />
+    <activity
+        android:id="@+id/navigation_novel_details"
+        android:name="org.fansin.ranobereader.ui.NovelDetailsActivity"
+        android:label="activity_novel_details"
+        tools:layout="@layout/activity_novel_details" >
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </activity>
 </navigation>

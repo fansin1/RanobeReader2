@@ -3,9 +3,13 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="novel_card_title_size">20sp</dimen>
-    <dimen name="novel_card_author_size">17sp</dimen>
-    <dimen name="novel_card_margin">10dp</dimen>
+    <dimen name="novel_card_author_size">14sp</dimen>
+    <dimen name="novel_card_description_size">14sp</dimen>
+    <dimen name="novel_card_margin">12dp</dimen>
     <dimen name="novel_card_margin_tb">3dp</dimen>
     <dimen name="novel_card_radius">4dp</dimen>
     <dimen name="novel_card_elevation">4dp</dimen>
+
+    <dimen name="connection_snackbar_side_margin">5dp</dimen>
+    <dimen name="connection_snackbar_bottom_margin">10dp</dimen>
 </resources>

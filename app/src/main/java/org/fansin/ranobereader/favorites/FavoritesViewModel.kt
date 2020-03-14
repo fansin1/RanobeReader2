@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.fansin.ranobereader.domain.model.Novel
+import org.fansin.ranobereader.domain.repository.FavoritesRepository
 import javax.inject.Inject
 
-class FavoritesViewModel @Inject constructor(): ViewModel() {
+class FavoritesViewModel @Inject constructor(
+    private val favoritesRepository: FavoritesRepository
+) : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"

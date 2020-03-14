@@ -1,27 +1,29 @@
 package org.fansin.ranobereader.di
 
-import android.content.Context
-import dagger.BindsInstance
 import dagger.Component
-import dagger.android.AndroidInjectionModule
 import org.fansin.ranobereader.App
-import org.fansin.ranobereader.di.ui.MainActivityModule
+import org.fansin.ranobereader.ui.*
 import javax.inject.Singleton
 
+@Component(
+    modules = [
+        AppModule::class,
+        NetModule::class,
+        ViewModelModule::class,
+        NovelModule::class
+    ]
+)
 @Singleton
-@Component(modules = [
-    AndroidInjectionModule::class,
-    MainActivityModule::class,
-    NetModule::class,
-    ViewModelModule::class,
-    NovelModule::class
-])
 interface AppComponent {
-
-    @Component.Factory
-    interface Factory {
-        fun create(@BindsInstance applicationContext: Context): AppComponent
-    }
-
     fun inject(app: App)
+
+    fun inject(mainActivity: MainActivity)
+
+    fun inject(novelsFragment: NovelsFragment)
+
+    fun inject(favoritesFragment: FavoritesFragment)
+
+    fun inject(preferencesFragment: PreferencesFragment)
+
+    fun inject(novelDetailsActivity: NovelDetailsActivity)
 }

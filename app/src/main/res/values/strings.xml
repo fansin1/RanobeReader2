@@ -4,4 +4,5 @@
     <string name="title_favorites">Favorites</string>
     <string name="title_settings">Settings</string>
     <string name="failed_message">Failed to load</string>
+    <string name="novel_author"><![CDATA[<b>Author:</b> %s]]></string>
 </resources>

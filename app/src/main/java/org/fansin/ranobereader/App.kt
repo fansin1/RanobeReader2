@@ -1,21 +1,22 @@
 package org.fansin.ranobereader
 
 import android.app.Application
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import org.fansin.ranobereader.di.DaggerAppComponent
-import javax.inject.Inject
+import org.fansin.ranobereader.di.*
 
-class App : Application(), HasAndroidInjector {
+class App : Application() {
 
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+    companion object {
+        lateinit var appComponent: AppComponent
+    }
 
     override fun onCreate() {
         super.onCreate()
-        DaggerAppComponent.factory().create(this).inject(this)
+        appComponent =
+            DaggerAppComponent
+                .builder()
+                .appModule(AppModule(applicationContext))
+                .netModule(NetModule())
+                .novelModule(NovelModule())
+                .build()
     }
-
-    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 }

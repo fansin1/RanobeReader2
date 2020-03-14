@@ -1,9 +1,9 @@
 package org.fansin.ranobereader.domain.repository
 
 import android.util.Log
-import org.fansin.ranobereader.domain.RanobeApi
 import org.fansin.ranobereader.domain.model.Novel
-import org.fansin.ranobereader.domain.model.ResultList
+import org.fansin.ranobereader.domain.model.NovelResultList
+import org.fansin.ranobereader.network.RanobeApi
 import org.fansin.ranobereader.novels.NovelErrorResponseException
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,19 +20,19 @@ class NovelsRepository(
 
     fun loadData(page: Int, count: Int, novelCallback: NovelCallback) {
         Log.d("Loaded", "page = $page, count = $count")
-        ranobeApi.getBooks(page, count).enqueue(object : Callback<ResultList<Novel>> {
-            override fun onFailure(call: Call<ResultList<Novel>>, t: Throwable) {
+        ranobeApi.getBooks(page, count).enqueue(object : Callback<NovelResultList> {
+            override fun onFailure(call: Call<NovelResultList>, t: Throwable) {
                 novelCallback.onError(t)
             }
 
             override fun onResponse(
-                call: Call<ResultList<Novel>>,
-                response: Response<ResultList<Novel>>
+                call: Call<NovelResultList>,
+                response: Response<NovelResultList>
             ) {
-                if (response.code() / 100 != 2) {
-                    novelCallback.onError(NovelErrorResponseException(response.code()))
-                } else {
+                if (response.isSuccessful) {
                     novelCallback.onResult(response.body()?.items ?: listOf())
+                } else {
+                    novelCallback.onError(NovelErrorResponseException(response.code()))
                 }
             }
         })
