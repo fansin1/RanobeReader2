@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import org.fansin.ranobereader.R
-import org.fansin.ranobereader.preferences.PreferencesViewModel
+import org.fansin.ranobereader.ui.preferences.PreferencesViewModel
 
 class PreferencesFragment : Fragment() {
 

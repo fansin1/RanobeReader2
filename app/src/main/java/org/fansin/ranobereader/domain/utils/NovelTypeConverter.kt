@@ -1,6 +1,8 @@
-package org.fansin.ranobereader.domain.model
+package org.fansin.ranobereader.domain.utils
 
 import androidx.room.TypeConverter
+import org.fansin.ranobereader.domain.model.Chapter
+import org.fansin.ranobereader.domain.model.Image
 
 class NovelTypeConverter {
 
@@ -14,7 +16,9 @@ class NovelTypeConverter {
     fun fromImages(images: List<Image>) = images.joinToString(",", transform = Image::url)
 
     @TypeConverter
-    fun toImages(images: String): List<Image> = images.split(",").map { Image(it) }
+    fun toImages(images: String): List<Image> = images.split(",").map {
+        Image(it)
+    }
 
     @TypeConverter
     fun fromChapters(chapters: MutableList<Chapter>) =
@@ -24,6 +28,6 @@ class NovelTypeConverter {
     fun toChapters(chapters: String): MutableList<Chapter> =
         chapters.split(";").map {
             val fields = it.split(",")
-            Chapter(fields[0].toInt(), fields[1].trim())
+            Chapter(fields[0].toInt(), fields[1])
         }.toMutableList()
 }

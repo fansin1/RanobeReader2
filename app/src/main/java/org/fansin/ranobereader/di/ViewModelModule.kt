@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import org.fansin.ranobereader.favorites.FavoritesViewModel
-import org.fansin.ranobereader.novels.NovelsViewModel
-import org.fansin.ranobereader.preferences.PreferencesViewModel
+import org.fansin.ranobereader.ui.novels.favorites.FavoritesViewModel
+import org.fansin.ranobereader.ui.novels.NovelsViewModel
+import org.fansin.ranobereader.ui.preferences.PreferencesViewModel
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton

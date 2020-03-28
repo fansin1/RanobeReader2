@@ -1,10 +1,9 @@
-package org.fansin.ranobereader.novels
+package org.fansin.ranobereader.ui.novels
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.novel_card.view.*
 import org.fansin.ranobereader.domain.model.Novel
-import org.fansin.ranobereader.novels.NovelsAdapter.NovelClickListener
 
 class NovelViewHolder(
     itemView: View

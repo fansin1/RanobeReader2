@@ -2,6 +2,7 @@ package org.fansin.ranobereader.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +21,9 @@ import org.fansin.ranobereader.App
 import org.fansin.ranobereader.R
 import org.fansin.ranobereader.domain.model.Novel
 import org.fansin.ranobereader.network.ConnectionLiveData
-import org.fansin.ranobereader.novels.NovelsAdapter
-import org.fansin.ranobereader.novels.NovelsLoadingState
-import org.fansin.ranobereader.novels.NovelsViewModel
+import org.fansin.ranobereader.ui.novels.NovelClickListener
+import org.fansin.ranobereader.ui.novels.NovelsLoadingState
+import org.fansin.ranobereader.ui.novels.NovelsViewModel
 import javax.inject.Inject
 
 class NovelsFragment : Fragment() {
@@ -42,7 +43,7 @@ class NovelsFragment : Fragment() {
         viewModelFactory
     }
 
-    inner class NovelClickListener : NovelsAdapter.NovelClickListener {
+    inner class NovelClickListenerImpl : NovelClickListener {
         override fun onToBookClick(novel: Novel) {
             val bundle = Bundle()
             bundle.putParcelable("novel", novel)
@@ -50,13 +51,12 @@ class NovelsFragment : Fragment() {
         }
 
         override fun onLikeClick() {
-            //TODO like click
+            // TODO like click
         }
 
         override fun onDislikeClick() {
-            //TODO dislike click
+            // TODO dislike click
         }
-
     }
 
     override fun onCreateView(
@@ -77,23 +77,11 @@ class NovelsFragment : Fragment() {
 
         navController = findNavController()
 
-        novelsRecyclerView.layoutManager = LinearLayoutManager(
-            context,
-            RecyclerView.VERTICAL, false
-        )
-
-        novelsViewModel.layoutManagerState.observe(viewLifecycleOwner, Observer {
-            novelsRecyclerView.layoutManager?.onRestoreInstanceState(it)
-        })
-
-        novelsViewModel.novelsAdapter.value?.setOnClickListener(NovelClickListener())
-        novelsRecyclerView.adapter = novelsViewModel.novelsAdapter.value
-
         swipeRefreshLayout.setOnRefreshListener {
             novelsViewModel.refresh()
         }
-
-        initObservers()
+        initRecyclerViewObservers()
+        initNetworkObservers()
     }
 
     override fun onPause() {
@@ -101,11 +89,23 @@ class NovelsFragment : Fragment() {
         resetRecyclerViewPosition()
     }
 
-    private fun initObservers() {
-        novelsViewModel.novelsAdapter.observe(viewLifecycleOwner, Observer {
-            novelsRecyclerView.adapter = it
+    private fun initRecyclerViewObservers() {
+        favoritesRecyclerView.layoutManager = LinearLayoutManager(
+            context,
+            RecyclerView.VERTICAL, false
+        )
+
+        novelsViewModel.layoutManagerState.observe(viewLifecycleOwner, Observer {
+            favoritesRecyclerView.layoutManager?.onRestoreInstanceState(it)
         })
 
+        novelsViewModel.novelsAdapter.observe(viewLifecycleOwner, Observer { adapter ->
+            adapter.setOnClickListener(NovelClickListenerImpl())
+            favoritesRecyclerView.adapter = adapter
+        })
+    }
+
+    private fun initNetworkObservers() {
         connectionLiveData.observe(viewLifecycleOwner, Observer { connected ->
             if (!connected) {
                 view?.let {
@@ -119,15 +119,11 @@ class NovelsFragment : Fragment() {
         novelsLoadingState.observe(viewLifecycleOwner, Observer {
             updateView(it)
         })
-
-        novelsViewModel.pagedList.observe(viewLifecycleOwner, Observer {
-            novelsViewModel.novelsAdapter.value!!.submitList(it)
-        })
     }
 
     private fun resetRecyclerViewPosition() {
         novelsViewModel.layoutManagerState.value =
-            novelsRecyclerView.layoutManager?.onSaveInstanceState()
+            favoritesRecyclerView.layoutManager?.onSaveInstanceState()
     }
 
     private fun updateView(state: NovelsLoadingState) {
@@ -144,6 +140,7 @@ class NovelsFragment : Fragment() {
                 swipeRefreshLayout.isRefreshing = false
                 failed.visibility = View.VISIBLE
             }
+            else -> Log.d("ERROR", "WTF")
         }
     }
 }

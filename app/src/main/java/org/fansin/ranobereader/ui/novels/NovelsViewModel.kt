@@ -1,4 +1,4 @@
-package org.fansin.ranobereader.novels
+package org.fansin.ranobereader.ui.novels
 
 import android.os.Parcelable
 import androidx.lifecycle.LiveData

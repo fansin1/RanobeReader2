@@ -2,7 +2,11 @@ package org.fansin.ranobereader.di
 
 import dagger.Component
 import org.fansin.ranobereader.App
-import org.fansin.ranobereader.ui.*
+import org.fansin.ranobereader.ui.FavoritesFragment
+import org.fansin.ranobereader.ui.MainActivity
+import org.fansin.ranobereader.ui.NovelDetailsActivity
+import org.fansin.ranobereader.ui.NovelsFragment
+import org.fansin.ranobereader.ui.PreferencesFragment
 import javax.inject.Singleton
 
 @Component(
@@ -10,7 +14,8 @@ import javax.inject.Singleton
         AppModule::class,
         NetModule::class,
         ViewModelModule::class,
-        NovelModule::class
+        NovelModule::class,
+        FavoritesModule::class
     ]
 )
 @Singleton

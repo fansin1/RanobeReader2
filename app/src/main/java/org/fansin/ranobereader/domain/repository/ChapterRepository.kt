@@ -1,4 +1,3 @@
 package org.fansin.ranobereader.domain.repository
 
-class ChapterRepoository {
-}
+class ChapterRepository

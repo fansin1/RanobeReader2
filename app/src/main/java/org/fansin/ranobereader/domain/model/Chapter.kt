@@ -11,6 +11,6 @@ data class Chapter(
     val title: String
 ) : Parcelable {
     override fun toString(): String {
-        return "$id, $title"
+        return "$id,$title"
     }
 }

@@ -6,15 +6,16 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import dagger.Module
 import dagger.Provides
+import org.fansin.ranobereader.ApplicationConfig
 import org.fansin.ranobereader.NovelBinder
 import org.fansin.ranobereader.domain.model.Novel
 import org.fansin.ranobereader.domain.repository.NovelsRepository
 import org.fansin.ranobereader.network.ConnectionLiveData
 import org.fansin.ranobereader.network.RanobeApi
-import org.fansin.ranobereader.novels.NovelsAdapter
-import org.fansin.ranobereader.novels.NovelsDataSourceFactory
-import org.fansin.ranobereader.novels.NovelsDiffUtilCallback
-import org.fansin.ranobereader.novels.NovelsLoadingState
+import org.fansin.ranobereader.ui.novels.NovelsAdapter
+import org.fansin.ranobereader.ui.novels.NovelsDataSourceFactory
+import org.fansin.ranobereader.ui.novels.NovelsDiffUtilCallback
+import org.fansin.ranobereader.ui.novels.NovelsLoadingState
 import java.util.concurrent.Executors
 import javax.inject.Singleton
 
@@ -26,9 +27,9 @@ class NovelModule {
     fun provideNovelsAdapter(
         novelBinder: NovelBinder,
         diffUtilCallback: NovelsDiffUtilCallback,
-        connectionLiveData: ConnectionLiveData
+        livePagedList: LiveData<PagedList<Novel>>
     ): NovelsAdapter {
-        return NovelsAdapter(novelBinder, diffUtilCallback, connectionLiveData)
+        return NovelsAdapter(novelBinder, diffUtilCallback, livePagedList)
     }
 
     @Singleton
@@ -50,7 +51,7 @@ class NovelModule {
     fun providePagedListConfig(): PagedList.Config {
         return PagedList.Config.Builder()
             .setEnablePlaceholders(false)
-            .setPageSize(16)
+            .setPageSize(ApplicationConfig.NOVELS_PER_PAGE)
             .build()
     }
 
@@ -61,7 +62,10 @@ class NovelModule {
         config: PagedList.Config
     ): LiveData<PagedList<Novel>> {
         return LivePagedListBuilder(novelsDataSourceFactory, config)
-            .setFetchExecutor(Executors.newFixedThreadPool(5)).build()
+            .setFetchExecutor(
+                Executors
+                    .newFixedThreadPool(ApplicationConfig.PAGED_LIST_EXECUTORS_COUNT)
+            ).build()
     }
 
     @Singleton
@@ -72,7 +76,9 @@ class NovelModule {
 
     @Singleton
     @Provides
-    fun provideNovelRepository(ranobeApi: RanobeApi): NovelsRepository {
+    fun provideNovelRepository(
+        ranobeApi: RanobeApi
+    ): NovelsRepository {
         return NovelsRepository(ranobeApi)
     }
 

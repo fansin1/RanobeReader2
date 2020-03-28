@@ -1,4 +1,4 @@
-package org.fansin.ranobereader.preferences
+package org.fansin.ranobereader.ui.preferences
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
