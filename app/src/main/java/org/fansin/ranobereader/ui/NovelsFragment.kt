@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_novels.*
 import org.fansin.ranobereader.App
 import org.fansin.ranobereader.R
 import org.fansin.ranobereader.network.ConnectionLiveData
+import org.fansin.ranobereader.ui.novels.NovelsAdapter
 import org.fansin.ranobereader.ui.novels.NovelsLoadingState
 import org.fansin.ranobereader.ui.novels.NovelsViewModel
 import javax.inject.Inject
@@ -34,6 +35,9 @@ class NovelsFragment : Fragment() {
 
     @Inject
     lateinit var connectionLiveData: ConnectionLiveData
+
+    @Inject
+    lateinit var novelsAdapter: NovelsAdapter
 
     private lateinit var navController: NavController
 
@@ -61,6 +65,7 @@ class NovelsFragment : Fragment() {
             context,
             RecyclerView.VERTICAL, false
         )
+        novelRecyclerView.adapter = novelsAdapter
 
         navController = findNavController()
 
@@ -80,11 +85,6 @@ class NovelsFragment : Fragment() {
     private fun initRecyclerViewObservers() {
         novelsViewModel.layoutManagerState.observe(viewLifecycleOwner, Observer {
             novelRecyclerView.layoutManager?.onRestoreInstanceState(it)
-        })
-
-        novelsViewModel.novelsAdapter.observe(viewLifecycleOwner, Observer { adapter ->
-            //adapter.setOnClickListener(NovelClicksBinderImpl(favoritesRepository, navController))
-            novelRecyclerView.adapter = adapter
         })
     }
 

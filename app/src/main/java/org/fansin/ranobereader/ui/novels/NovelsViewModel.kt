@@ -9,15 +9,8 @@ import org.fansin.ranobereader.domain.model.Novel
 import javax.inject.Inject
 
 class NovelsViewModel @Inject constructor(
-    novelsAdapter: NovelsAdapter,
     private val pagedList: LiveData<PagedList<Novel>>
 ) : ViewModel() {
-
-    private val mutableNovelsAdapter = MutableLiveData<NovelsAdapter>().apply {
-        value = novelsAdapter
-    }
-
-    val novelsAdapter: LiveData<NovelsAdapter> = mutableNovelsAdapter
 
     var layoutManagerState = MutableLiveData<Parcelable>()
 
