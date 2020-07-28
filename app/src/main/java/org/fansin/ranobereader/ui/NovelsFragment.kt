@@ -19,9 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_novels.*
 import org.fansin.ranobereader.App
 import org.fansin.ranobereader.R
-import org.fansin.ranobereader.domain.model.Novel
 import org.fansin.ranobereader.network.ConnectionLiveData
-import org.fansin.ranobereader.ui.novels.NovelClickListener
 import org.fansin.ranobereader.ui.novels.NovelsLoadingState
 import org.fansin.ranobereader.ui.novels.NovelsViewModel
 import javax.inject.Inject
@@ -43,22 +41,6 @@ class NovelsFragment : Fragment() {
         viewModelFactory
     }
 
-    inner class NovelClickListenerImpl : NovelClickListener {
-        override fun onToBookClick(novel: Novel) {
-            val bundle = Bundle()
-            bundle.putParcelable("novel", novel)
-            navController.navigate(R.id.navigation_novel_details, bundle)
-        }
-
-        override fun onLikeClick() {
-            // TODO like click
-        }
-
-        override fun onDislikeClick() {
-            // TODO dislike click
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -75,33 +57,34 @@ class NovelsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        novelRecyclerView.layoutManager = LinearLayoutManager(
+            context,
+            RecyclerView.VERTICAL, false
+        )
+
         navController = findNavController()
 
         swipeRefreshLayout.setOnRefreshListener {
             novelsViewModel.refresh()
         }
+
         initRecyclerViewObservers()
         initNetworkObservers()
     }
 
     override fun onPause() {
         super.onPause()
-        resetRecyclerViewPosition()
+        saveRecyclerViewPosition()
     }
 
     private fun initRecyclerViewObservers() {
-        favoritesRecyclerView.layoutManager = LinearLayoutManager(
-            context,
-            RecyclerView.VERTICAL, false
-        )
-
         novelsViewModel.layoutManagerState.observe(viewLifecycleOwner, Observer {
-            favoritesRecyclerView.layoutManager?.onRestoreInstanceState(it)
+            novelRecyclerView.layoutManager?.onRestoreInstanceState(it)
         })
 
         novelsViewModel.novelsAdapter.observe(viewLifecycleOwner, Observer { adapter ->
-            adapter.setOnClickListener(NovelClickListenerImpl())
-            favoritesRecyclerView.adapter = adapter
+            //adapter.setOnClickListener(NovelClicksBinderImpl(favoritesRepository, navController))
+            novelRecyclerView.adapter = adapter
         })
     }
 
@@ -121,9 +104,9 @@ class NovelsFragment : Fragment() {
         })
     }
 
-    private fun resetRecyclerViewPosition() {
+    private fun saveRecyclerViewPosition() {
         novelsViewModel.layoutManagerState.value =
-            favoritesRecyclerView.layoutManager?.onSaveInstanceState()
+            novelRecyclerView.layoutManager?.onSaveInstanceState()
     }
 
     private fun updateView(state: NovelsLoadingState) {

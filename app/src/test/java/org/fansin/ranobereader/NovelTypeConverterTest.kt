@@ -40,4 +40,14 @@ class NovelTypeConverterTest {
     fun toChapters() {
         assertEquals(chapters, underTest.toChapters(chaptersString))
     }
+
+    @Test
+    fun fromChaptersEmpty() {
+        assertEquals("", underTest.fromChapters(mutableListOf()))
+    }
+
+    @Test
+    fun toChaptersEmpty() {
+        assertEquals(mutableListOf<Chapter>(), underTest.toChapters(""))
+    }
 }

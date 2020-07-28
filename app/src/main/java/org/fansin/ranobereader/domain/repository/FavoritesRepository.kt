@@ -4,17 +4,13 @@ import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.fansin.ranobereader.database.FavoritesDao
 import org.fansin.ranobereader.domain.model.Novel
 
 class FavoritesRepository(
     private val favoritesDao: FavoritesDao
 ) {
-
-    fun getById(id: Int): Novel {
-        return favoritesDao.getById(id)
-    }
-
     fun getAll(): LiveData<List<Novel>> {
         return favoritesDao.getAll()
     }
@@ -28,6 +24,14 @@ class FavoritesRepository(
     fun remove(novel: Novel) {
         GlobalScope.launch(Dispatchers.IO) {
             favoritesDao.delete(novel)
+        }
+    }
+
+    suspend fun has(novel: Novel) = getById(novel.id) != null
+
+    private suspend fun getById(id: Int): Novel? {
+        return withContext(Dispatchers.IO) {
+            favoritesDao.getById(id)
         }
     }
 }

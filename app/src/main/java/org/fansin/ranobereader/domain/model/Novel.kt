@@ -19,7 +19,7 @@ data class Novel(
     @Embedded val author: Author = Author(0, ""),
     val genres: List<String> = listOf(),
     val chapters: MutableList<Chapter> = mutableListOf(),
-    val images: List<Image> = listOf(),
+    val images: Images = Images(listOf()),
     val description: String = "",
     val likesCount: Int = 0,
     val dislikesCount: Int = 0

@@ -18,6 +18,7 @@ class NovelsDataSource(
 ) : PageKeyedDataSource<Int, Novel>() {
 
     private var lastFailedResponse: NovelsResponse? = null
+    private var lastFailedCallback: NovelsRepository.NovelCallback? = null
 
     init {
         GlobalScope.launch(Dispatchers.Main) {
@@ -35,11 +36,8 @@ class NovelsDataSource(
     ) {
         mutableNovelsLoadingState.postValue(NovelsLoadingState.LOADING)
         novelsRepository.loadData(
-            NovelsResponse(
-                1,
-                params.requestedLoadSize,
-                createNovelCallback(params, callback)
-            )
+            NovelsResponse(1, params.requestedLoadSize),
+            createNovelCallback(params, callback)
         )
     }
 
@@ -48,11 +46,8 @@ class NovelsDataSource(
         callback: LoadCallback<Int, Novel>
     ) {
         novelsRepository.loadData(
-            NovelsResponse(
-                params.key,
-                params.requestedLoadSize,
-                createNovelCallback(params, callback)
-            )
+            NovelsResponse(params.key, params.requestedLoadSize),
+            createNovelCallback(params, callback)
         )
     }
 
@@ -70,7 +65,7 @@ class NovelsDataSource(
         return object : NovelsRepository.NovelCallback {
             override fun onResult(data: List<Novel>) {
                 callback.onResult(
-                    data.map { it },
+                    data,
                     0,
                     nextPageNumber(1, params.requestedLoadSize)
                 )
@@ -78,11 +73,9 @@ class NovelsDataSource(
             }
 
             override fun onError(t: Throwable) {
-                lastFailedResponse = NovelsResponse(
-                    1,
-                    params.requestedLoadSize,
-                    this
-                )
+                lastFailedResponse = NovelsResponse(1, params.requestedLoadSize)
+                lastFailedCallback = this
+                t.printStackTrace()
                 mutableNovelsLoadingState.postValue(NovelsLoadingState.ERROR_INIT)
             }
         }
@@ -94,16 +87,14 @@ class NovelsDataSource(
     ): NovelsRepository.NovelCallback {
         return object : NovelsRepository.NovelCallback {
             override fun onResult(data: List<Novel>) {
-                callback.onResult(data.map { it }, params.key + 1)
+                callback.onResult(data, params.key + 1)
                 mutableNovelsLoadingState.postValue(NovelsLoadingState.LOADED_AFTER)
             }
 
             override fun onError(t: Throwable) {
-                lastFailedResponse = NovelsResponse(
-                    params.key,
-                    params.requestedLoadSize,
-                    this
-                )
+                lastFailedResponse = NovelsResponse(params.key, params.requestedLoadSize)
+                lastFailedCallback = this
+                t.printStackTrace()
                 mutableNovelsLoadingState.postValue(NovelsLoadingState.ERROR_AFTER)
             }
         }
@@ -111,8 +102,10 @@ class NovelsDataSource(
 
     private fun onConnectionRestored() {
         lastFailedResponse?.let { response ->
-            mutableNovelsLoadingState.postValue(NovelsLoadingState.LOADING)
-            novelsRepository.loadData(response)
+            lastFailedCallback?.let { callback ->
+                mutableNovelsLoadingState.postValue(NovelsLoadingState.LOADING)
+                novelsRepository.loadData(response, callback)
+            }
         }
     }
 

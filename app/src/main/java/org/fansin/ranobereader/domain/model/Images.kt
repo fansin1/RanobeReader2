@@ -9,6 +9,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-data class Image(
-    val url: String
+data class Images(
+    @get: JsonProperty("vertical") val images: List<Image>
 ) : Parcelable

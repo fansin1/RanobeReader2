@@ -7,6 +7,7 @@ import org.fansin.ranobereader.ui.MainActivity
 import org.fansin.ranobereader.ui.NovelDetailsActivity
 import org.fansin.ranobereader.ui.NovelsFragment
 import org.fansin.ranobereader.ui.PreferencesFragment
+import org.fansin.ranobereader.ui.novels.favorites.FavoriteButtonImagesProvider
 import javax.inject.Singleton
 
 @Component(
@@ -31,4 +32,6 @@ interface AppComponent {
     fun inject(preferencesFragment: PreferencesFragment)
 
     fun inject(novelDetailsActivity: NovelDetailsActivity)
+
+    fun getFavoriteButtonImagesProvider(): FavoriteButtonImagesProvider
 }

@@ -1,5 +1,6 @@
 package org.fansin.ranobereader.di
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
@@ -9,13 +10,16 @@ import dagger.Provides
 import org.fansin.ranobereader.ApplicationConfig
 import org.fansin.ranobereader.NovelBinder
 import org.fansin.ranobereader.domain.model.Novel
+import org.fansin.ranobereader.domain.repository.FavoritesRepository
 import org.fansin.ranobereader.domain.repository.NovelsRepository
 import org.fansin.ranobereader.network.ConnectionLiveData
 import org.fansin.ranobereader.network.RanobeApi
+import org.fansin.ranobereader.ui.novels.NovelClicksBinder
 import org.fansin.ranobereader.ui.novels.NovelsAdapter
 import org.fansin.ranobereader.ui.novels.NovelsDataSourceFactory
 import org.fansin.ranobereader.ui.novels.NovelsDiffUtilCallback
 import org.fansin.ranobereader.ui.novels.NovelsLoadingState
+import org.fansin.ranobereader.ui.novels.favorites.FavoriteButtonImagesProvider
 import java.util.concurrent.Executors
 import javax.inject.Singleton
 
@@ -26,10 +30,11 @@ class NovelModule {
     @Provides
     fun provideNovelsAdapter(
         novelBinder: NovelBinder,
+        novelClicksBinder: NovelClicksBinder,
         diffUtilCallback: NovelsDiffUtilCallback,
         livePagedList: LiveData<PagedList<Novel>>
     ): NovelsAdapter {
-        return NovelsAdapter(novelBinder, diffUtilCallback, livePagedList)
+        return NovelsAdapter(novelBinder, novelClicksBinder, diffUtilCallback, livePagedList)
     }
 
     @Singleton
@@ -94,5 +99,17 @@ class NovelModule {
         novelsLoadingState: MutableLiveData<NovelsLoadingState>
     ): LiveData<NovelsLoadingState> {
         return novelsLoadingState
+    }
+
+    @Singleton
+    @Provides
+    fun provideNovelBinder(favoritesRepository: FavoritesRepository): NovelBinder {
+        return NovelBinder(favoritesRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideNovelClicksBinder(favoritesRepository: FavoritesRepository): NovelClicksBinder {
+        return NovelClicksBinder(favoritesRepository)
     }
 }

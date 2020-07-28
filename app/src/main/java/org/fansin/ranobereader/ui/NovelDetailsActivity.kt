@@ -1,7 +1,7 @@
 package org.fansin.ranobereader.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_novel_details.*
 import org.fansin.ranobereader.App
 import org.fansin.ranobereader.NovelBinder

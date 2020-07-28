@@ -6,15 +6,12 @@ import kotlinx.android.synthetic.main.novel_card.view.*
 import org.fansin.ranobereader.domain.model.Novel
 
 class NovelViewHolder(
-    itemView: View
+    itemView: View,
+    private val novelClicksBinder: NovelClicksBinder
 ) : RecyclerView.ViewHolder(itemView) {
 
+    var onReadClickListener = { _: View -> }
     private lateinit var novel: Novel
-    private lateinit var novelClickListener: NovelClickListener
-
-    fun setNovelClickListener(novelClickListener: NovelClickListener) {
-        this.novelClickListener = novelClickListener
-    }
 
     fun bind(bindNovel: Novel) {
         this.novel = bindNovel
@@ -22,8 +19,12 @@ class NovelViewHolder(
     }
 
     private fun bindClickListeners() {
-        itemView.book.setOnClickListener { novelClickListener.onToBookClick(novel) }
-        itemView.likes.setOnClickListener { novelClickListener.onLikeClick() }
-        itemView.dislikes.setOnClickListener { novelClickListener.onDislikeClick() }
+        novelClicksBinder.bind(
+            novel,
+            itemView.likes,
+            itemView.dislikes,
+            itemView.favorite
+        )
+        itemView.book.setOnClickListener(onReadClickListener)
     }
 }

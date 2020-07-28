@@ -36,7 +36,7 @@
         android:label="activity_novel_details"
         tools:layout="@layout/activity_novel_details" >
         <argument
-            android:name="title"
-            app:argType="string" />
+            android:name="novel"
+            app:argType="org.fansin.ranobereader.domain.model.Novel" />
     </activity>
 </navigation>

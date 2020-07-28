@@ -10,18 +10,18 @@ import javax.inject.Inject
 
 class NovelsViewModel @Inject constructor(
     novelsAdapter: NovelsAdapter,
-    val pagedList: LiveData<PagedList<Novel>>
+    private val pagedList: LiveData<PagedList<Novel>>
 ) : ViewModel() {
 
-    private val _novelsAdapter = MutableLiveData<NovelsAdapter>().apply {
+    private val mutableNovelsAdapter = MutableLiveData<NovelsAdapter>().apply {
         value = novelsAdapter
     }
 
-    val novelsAdapter: LiveData<NovelsAdapter> = _novelsAdapter
+    val novelsAdapter: LiveData<NovelsAdapter> = mutableNovelsAdapter
 
     var layoutManagerState = MutableLiveData<Parcelable>()
 
     fun refresh() {
-        pagedList.value!!.dataSource.invalidate()
+        pagedList.value?.dataSource?.invalidate()
     }
 }

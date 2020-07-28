@@ -3,6 +3,7 @@ package org.fansin.ranobereader.domain.utils
 import androidx.room.TypeConverter
 import org.fansin.ranobereader.domain.model.Chapter
 import org.fansin.ranobereader.domain.model.Image
+import org.fansin.ranobereader.domain.model.Images
 
 class NovelTypeConverter {
 
@@ -13,12 +14,12 @@ class NovelTypeConverter {
     fun toGenres(genres: String): List<String> = genres.split(",")
 
     @TypeConverter
-    fun fromImages(images: List<Image>) = images.joinToString(",", transform = Image::url)
+    fun fromImages(images: Images) = images.images.joinToString(",", transform = Image::url)
 
     @TypeConverter
-    fun toImages(images: String): List<Image> = images.split(",").map {
+    fun toImages(images: String): Images = Images(images.split(",").map {
         Image(it)
-    }
+    })
 
     @TypeConverter
     fun fromChapters(chapters: MutableList<Chapter>) =
@@ -26,8 +27,12 @@ class NovelTypeConverter {
 
     @TypeConverter
     fun toChapters(chapters: String): MutableList<Chapter> =
-        chapters.split(";").map {
-            val fields = it.split(",")
-            Chapter(fields[0].toInt(), fields[1])
-        }.toMutableList()
+        if (chapters.isNotEmpty()) {
+            chapters.split(";").map {
+                val fields = it.split(",")
+                Chapter(fields[0].toInt(), fields[1])
+            }.toMutableList()
+        } else {
+            mutableListOf()
+        }
 }

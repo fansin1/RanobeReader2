@@ -26,17 +26,17 @@ class NovelsRepository(
         fun onError(t: Throwable)
     }
 
-    fun loadData(novelsResponse: NovelsResponse) {
+    fun loadData(novelsResponse: NovelsResponse, novelCallback: NovelCallback) {
         Log.d("Loaded", "page = ${novelsResponse.page}, count = ${novelsResponse.count}")
         ranobeApi
             .getBooks(novelsResponse.page, novelsResponse.count)
-            .enqueue(createCallback(novelsResponse))
+            .enqueue(createCallback(novelsResponse, novelCallback))
     }
 
-    private fun createCallback(novelsResponse: NovelsResponse) =
+    private fun createCallback(novelsResponse: NovelsResponse, novelCallback: NovelCallback) =
         object : Callback<NovelResultList> {
             override fun onFailure(call: Call<NovelResultList>, t: Throwable) {
-                onError(novelsResponse, t)
+                onError(novelsResponse, novelCallback, t)
             }
 
             override fun onResponse(
@@ -44,22 +44,25 @@ class NovelsRepository(
                 response: Response<NovelResultList>
             ) {
                 if (response.isSuccessful) {
-                    novelsResponse.novelCallback.onResult(response.body()?.items ?: listOf())
+                    novelCallback.onResult(response.body()?.items ?: listOf())
                 } else {
-                    onError(novelsResponse, NovelErrorResponseException(response.code()))
+                    val novelError = NovelErrorResponseException(response.code())
+                    onError(novelsResponse, novelCallback, novelError)
                 }
             }
         }
 
-    private fun onError(novelsResponse: NovelsResponse, throwable: Throwable) =
+    private fun onError(novelsResponse: NovelsResponse,
+                        novelCallback: NovelCallback,
+                        throwable: Throwable) =
         GlobalScope.launch(Dispatchers.Default) {
             delay(ApplicationConfig.NOVEL_RETRY_DELAY)
             if (retries > ApplicationConfig.NOVEL_LOAD_MAX_RETRIES) {
                 retries = 0
-                novelsResponse.novelCallback.onError(throwable)
+                novelCallback.onError(throwable)
             } else {
                 retries++
-                loadData(novelsResponse)
+                loadData(novelsResponse, novelCallback)
             }
         }
 }

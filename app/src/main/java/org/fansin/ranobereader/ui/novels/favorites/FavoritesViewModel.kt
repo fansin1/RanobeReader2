@@ -1,18 +1,19 @@
 package org.fansin.ranobereader.ui.novels.favorites
 
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import org.fansin.ranobereader.domain.model.Novel
 import javax.inject.Inject
 
-class FavoritesViewModel @Inject constructor() : ViewModel() {
-
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+class FavoritesViewModel @Inject constructor(
+    favoritesAdapter: FavoritesAdapter
+) : ViewModel() {
+    private val mutableAdapter = MutableLiveData<FavoritesAdapter>().apply {
+        value = favoritesAdapter
     }
-    private val _novels = MutableLiveData<List<Novel>>()
 
-    val text: LiveData<String> = _text
-    val novels: LiveData<List<Novel>> = _novels
+    var layoutManagerState = MutableLiveData<Parcelable>()
+
+    val adapter: LiveData<FavoritesAdapter> = mutableAdapter
 }

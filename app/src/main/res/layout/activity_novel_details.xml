@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -66,11 +65,36 @@
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
         android:text="Читать"
-        app:layout_constraintEnd_toEndOf="@+id/image"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:minWidth="0dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginEnd="3dp"
+        app:layout_constraintEnd_toStartOf="@+id/favorite"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image" />
+
+    <org.fansin.ranobereader.ui.novels.favorites.FavoriteButton
+        android:id="@+id/favorite"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:singleLine="true"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:minWidth="0dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginEnd="3dp"
+        app:icon="@drawable/ic_favorite_inactive"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@null"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toEndOf="@+id/book"
         app:layout_constraintTop_toBottomOf="@+id/image" />
 
     <Space
@@ -78,9 +102,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/book"
         app:layout_constraintEnd_toEndOf="@+id/book"
-        app:layout_constraintStart_toStartOf="@+id/book"
-        app:layout_constraintBottom_toBottomOf="@+id/book" />
+        app:layout_constraintStart_toStartOf="@+id/book" />
 
     <Button
         android:id="@+id/likes"
@@ -103,9 +127,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/likes"
         app:layout_constraintEnd_toEndOf="@+id/likes"
-        app:layout_constraintStart_toStartOf="@+id/likes"
-        app:layout_constraintBottom_toBottomOf="@+id/likes" />
+        app:layout_constraintStart_toStartOf="@+id/likes" />
 
     <Button
         android:id="@+id/dislikes"
@@ -128,6 +152,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.33" />
+        app:layout_constraintGuide_percent="0.40" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
